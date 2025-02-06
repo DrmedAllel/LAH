@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <h2>${language === 'de' ? 'Verantwortlich für den Inhalt gemäß § 10 Absatz 3 MDStV' : 'Responsible for content according to § 10 paragraph 3 MDStV'}</h2>
             
             <p>Udo Hafner<br>
-            c/o Luftfahrt-Archiv Hafner<br>
+            Luftfahrt-Archiv Hafner<br>
             Salonallee 5<br>
             D-71638 Ludwigsburg</p>
     
