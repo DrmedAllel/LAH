@@ -146,7 +146,7 @@ body{
         padding-right: auto;
     }
 
-    .title:hover {
+    .title :hover {
         text-decoration: underline;
     }
 
@@ -240,16 +240,17 @@ body{
 
     .dropdown .title {
         border: none;
-        cursor: pointer;
         font-size: min(1.5em, 1.4vw);
         font-weight: 700;
         color: var(--text-color);
         text-decoration: none;
         white-space: nowrap;
+        cursor: default;
     }
 
-    .dropdown:hover {
+    .title_link:hover {
         text-decoration: underline;
+        cursor: pointer !important;
     }
 
     .dropdown:hover .submenu,

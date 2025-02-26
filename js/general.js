@@ -59,15 +59,15 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <div class="dropdown">
-              <a class="title" href="/Zusatz/flugzeug_bewaffnung.html">${language === 'de' ? 'Flugzeug-Bewaffnung' : 'Aircraft Armament'}</a>
+              <a class="title title_link" href="/Zusatz/flugzeug_bewaffnung.html">${language === 'de' ? 'Flugzeug-Bewaffnung' : 'Aircraft Armament'}</a>
             </div>
 
             <div class="dropdown">
-              <a class="title" href="/Zusatz/flugzeug_ausruestung.html">${language === 'de' ? 'Flugzeug-Ausrüstung' : 'Aircraft Equipment'}</a>
+              <a class="title title_link" href="/Zusatz/flugzeug_ausruestung.html">${language === 'de' ? 'Flugzeug-Ausrüstung' : 'Aircraft Equipment'}</a>
             </div>
 
             <div class="dropdown">
-              <a class="title cart_link" href="/warenkorb.html">${language === 'de' ? 'Warenkorb' : 'Cart'}</a>
+              <a class="title cart_link title_link" href="/warenkorb.html">${language === 'de' ? 'Warenkorb' : 'Cart'}</a>
             </div>
           </nav>
       `;
