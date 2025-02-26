@@ -141,14 +141,14 @@ main {
 
 .add-to-cart{
     width: 100%;
-    background-color: var(--accent-color);
+    background-color: var(--text-color);
     font-size: 1em;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     border: 2px solid transparent;
-    color: var(--text-color);
+    color: var(--background-color);
     font-size: 1em;
     font-weight: 700;
     height: 3em;
@@ -161,10 +161,12 @@ main {
 .add-to-cart:hover{
     background-color: var(--confirm-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
 }
 
 .remove-from-cart{
     background-color: var(--confirm-color);
+    color: var(--text-color);
 }
 
 .shopping_cart{
