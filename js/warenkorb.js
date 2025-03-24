@@ -90,6 +90,10 @@ function sendEmail(data) {
 
     const key = 'rgnignderignbirdegnbi'
     const scriptURL = decrypt('GhMaGRRUS0oBChUHEh1cAwoICQ4MXAQBBEgDBQYABhRBEUYzLwMeDQAQRjMXDDhDACcmKi8sETxLMREBVw8uRjRaKBUIIQQqKkonNFpCEDAJXzMeJxA3H1AmDSYIMz1dLzhBEVRXHxQ+RCUAHkgLHAAR', key);
+    const recipients = data.additional_info === "Test1234CL" 
+        ? "claudius.caspar.laur@gmail.com" 
+        : "claudius.caspar.laur@gmail.com, u.e.hafner@t-online.de";
+
     fetch(scriptURL, {
         redirect: "follow",
         method: "POST",
@@ -97,7 +101,7 @@ function sendEmail(data) {
             "Content-Type": "text/plain;charset=utf-8",
         },
         body: JSON.stringify({
-            to: "claudius.caspar.laur@gmail.com, u.e.hafner@t-online.de",
+            to: recipients,
             subject: "Neue Bestellung " + data.orderNumber,
             message: generateMessage(data),
         })
@@ -114,8 +118,14 @@ function sendEmail(data) {
         //Clear the cart
         clearCart();
 
+        if (language === 'de') {
+            alert("Ihre Bestellung wurde erfolgreich abgeschickt! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld.");
+        } else {
+            alert("Your order has been successfully submitted! We will get in touch with you shortly. Please be patient.");
+        }
+
         //Redirect to the order confirmation page
-        window.location.href = '/placedorder.html';
+        window.location.href = '/index.html';
     })
     .catch(error => {
         console.error("Fehler beim Senden der E-Mail:", error);
