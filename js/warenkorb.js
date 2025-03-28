@@ -211,7 +211,7 @@ function generateMessage(data) {
     let message = `Neue Bestellung ${data.orderNumber}\n\n`;
     message += `Vorname: ${data.first_name}\n`;
     message += `Nachname: ${data.last_name}\n`;
-    message += `Sprache der Bestellung: ${getCookie('language')}\n`;
+    message += `Sprache der Bestellung: ${(getCookie('language') || 'en')}\n`;
     message += `E-Mail: ${data.email}\n`;
     message += `Firma: ${data.company}\n`;
     message += `Adresse: ${data.adress}\n`;
