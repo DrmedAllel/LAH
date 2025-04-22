@@ -84,58 +84,79 @@ document.addEventListener('DOMContentLoaded', function() {
     main.innerHTML = main.innerHTML + formHTML;
 });
 
-function sendEmail(data) {
-    //get Language Cookie
-    const language = getCookie('language');
-
-    const key = 'rgnignderignbirdegnbi'
+function sendMailRequest(to, subject, message) {
+    const key = 'rgnignderignbirdegnbi';
     const scriptURL = decrypt('GhMaGRRUS0oBChUHEh1cAwoICQ4MXAQBBEgDBQYABhRBEUYzLwMeDQAQRjMXDDhDACcmKi8sETxLMREBVw8uRjRaKBUIIQQqKkonNFpCEDAJXzMeJxA3H1AmDSYIMz1dLzhBEVRXHxQ+RCUAHkgLHAAR', key);
-    const recipients = data.additional_info === "Test1234CL" 
-        ? "claudius.caspar.laur@gmail.com" 
-        : "claudius.caspar.laur@gmail.com, u.e.hafner@t-online.de";
-
-    fetch(scriptURL, {
+    
+    return fetch(scriptURL, {
         redirect: "follow",
         method: "POST",
         headers: {
             "Content-Type": "text/plain;charset=utf-8",
         },
         body: JSON.stringify({
-            to: recipients,
-            subject: "Neue Bestellung " + data.orderNumber,
-            message: generateMessage(data),
+            to: to,
+            subject: subject,
+            message: message,
         })
     })
-    .then(response => response.json())
-    .then(result => {
-        console.log("Erfolgreich gesendet:", result);
+    .then(response => response.json());
+}
 
-        //Clear the form
-        document.getElementById('orderForm').reset();
-        deleteOrders();
-        //Save the order element in the local storage as a jason element
-        setLocalStorageItem(data.orderNumber, JSON.stringify(data), 7);
-        //Clear the cart
-        clearCart();
+function sendEmail(data) {
+    //get Language Cookie
+    const language = getCookie('language');
 
-        if (language === 'de') {
-            alert("Ihre Bestellung wurde erfolgreich abgeschickt! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld.");
-        } else {
-            alert("Your order has been successfully submitted! We will get in touch with you shortly. Please be patient.");
-        }
+    // Determine recipients based on additional info
+    const recipients = data.additional_info === "Test1234CL" 
+        ? "claudius.caspar.laur@gmail.com" 
+        : "claudius.caspar.laur@gmail.com, u.e.hafner@t-online.de";
+    
+    // Prepare email subject and message
+    const subject = "Neue Bestellung " + data.orderNumber;
+    const message = generateMessage(data);
 
-        //Redirect to the order confirmation page
-        window.location.href = '/index.html';
-    })
-    .catch(error => {
-        console.error("Fehler beim Senden der E-Mail:", error);
-        if (language === 'de') {
-            alert("Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.");
-        } else {
-            alert("There was an error sending your order. Please try again or contact us directly.");
-        }
-        hideSpinner();
-    });
+    // Send the email
+    sendMailRequest(recipients, subject, message)
+        .then(result => {
+            console.log("Erfolgreich gesendet:", result);
+
+            //Clear the form
+            document.getElementById('orderForm').reset();
+            deleteOrders();
+            //Save the order element in the local storage as a jason element
+            setLocalStorageItem(data.orderNumber, JSON.stringify(data), 7);
+            //Clear the cart
+            clearCart();
+
+            if (language === 'de') {
+                alert("Ihre Bestellung wurde erfolgreich abgeschickt! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld.");
+            } else {
+                alert("Your order has been successfully submitted! We will get in touch with you shortly. Please be patient.");
+            }
+            let confirm_message = '';
+            let confirm_subject = '';
+            if (language === 'de') {
+                confirm_message = "Vielen Dank für Ihre Bestellung! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld da wir alle Bestellungen manuell bearbeiten. \n\nFalls Sie Fragen haben können Sie uns jederzeit über die folgenden E-Mail Adresse kontaktieren: info@luftfahrt-archiv-hafner.de \n\nDies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.";
+                confirm_subject = "Vielen Dank für Ihre Bestellung! " + data.orderNumber;
+            } else {
+                confirm_message = "Thank you for your order! We will get in touch with you shortly. Please be patient as we process all orders manually. \n\nIf you have any questions, feel free to contact us at: info@luftfahrt-archiv-hafner.de \n\nThis is an automatically generated email. Please do not reply to this email.";
+                confirm_subject = "Thank you for your order! " + data.orderNumber;
+            }
+
+            sendMailRequest(data.email, confirm_subject, confirm_message)
+            //Redirect to the order confirmation page
+            window.location.href = '/index.html';
+        })
+        .catch(error => {
+            console.error("Fehler beim Senden der E-Mail:", error);
+            if (language === 'de') {
+                alert("Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.");
+            } else {
+                alert("There was an error sending your order. Please try again or contact us directly.");
+            }
+            hideSpinner();
+        });
 }
 
 function handleSubmit(event) {
