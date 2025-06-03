@@ -63,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <div class="form-group">
                     <label class="checkbox-label">
+                        <input type="checkbox" id="terms" required>
+                        <span>${language === 'de' ? 'Ich habe die ' : 'I have read the '}<a href="/agb.html" target="_blank">${language === 'de' ? 'AGB' : 'Terms and Conditions'}</a> ${language === 'de' ? 'gelesen und akzeptiere diese.' : 'and accept them.'}</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
                         <input type="checkbox" id="saveFormData" checked>
                         <span>${language === 'de' ? 'Formular für den nächsten Einkauf speichern' : 'Save form for next checkout'}</span>
                     </label>
@@ -243,8 +250,19 @@ function generateMessage(data) {
     message += `Zahlung: ${data.payment}\n`;
     message += `Zusätzliche Informationen: ${data.additional_info}\n\n\n`;
     message += `Bestellung:\n\n`;
-    message += `${data.products}\n`;
+    message += `${data.products}\n\n\n`;
+    message += `IP-Adresse: ${ip}\n`;
     return message;
+}
+
+async function getIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        return 'Error getting IP'
+    }
 }
 
 function getProducts() {
@@ -384,4 +402,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+
+let ip;
+document.addEventListener('DOMContentLoaded', async function(){
+    ip = await getIP();
 });
