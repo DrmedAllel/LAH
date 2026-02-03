@@ -180,13 +180,32 @@ function updateStoredItemTypeIfPresent(itemId, selectedType) {
     }
 }
 
+function updateDisplayedItemPrice(priceElement, selectedType, language) {
+    if (!priceElement) return;
+
+    const basePrice = priceElement.dataset.basePrice ?? priceElement.innerText;
+    // Persist the original/base price once, so we can restore it later.
+    if (!priceElement.dataset.basePrice) {
+        priceElement.dataset.basePrice = basePrice;
+    }
+
+    if (selectedType === 'book') {
+        priceElement.innerText = language === 'de'
+            ? 'Preis als Buch nur auf Anfrage.'
+            : 'Price as a book only on request.';
+    } else {
+        priceElement.innerText = priceElement.dataset.basePrice;
+    }
+}
+
 window.addEventListener('load', function () {
     const items = document.getElementsByClassName('item');
     const language = getCookie('language');
 
     for (let item of items) {
         const ItemTitle = item.getElementsByClassName('item_title')[0]?.innerText || '';
-        const ItemPrice = item.getElementsByClassName('price')[0]?.innerText || '';
+        const priceElement = item.getElementsByClassName('price')[0];
+        const ItemPrice = priceElement?.innerText || '';
         let ItemID = item.getElementsByClassName('item-number')[0]?.innerText || '';
         ItemID = ItemID.split(': ')[1] || ItemID;
 
@@ -205,6 +224,8 @@ window.addEventListener('load', function () {
         const initialFormat = getInitialFormatForItem(ItemID);
         const formatSelect = createFormatSelect(language, initialFormat);
 
+        updateDisplayedItemPrice(priceElement, formatSelect.value, language);
+
         const button = document.createElement('button');
         button.className = 'add-to-cart';
         button.id = ItemID;
@@ -216,6 +237,7 @@ window.addEventListener('load', function () {
 
         formatSelect.addEventListener('change', function () {
             updateStoredItemTypeIfPresent(ItemID, formatSelect.value);
+            updateDisplayedItemPrice(priceElement, formatSelect.value, language);
         });
 
         actions.appendChild(formatSelect);
