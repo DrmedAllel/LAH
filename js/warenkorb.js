@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="form-group_download form-group">
                     <h2>Download</h2>
                     <div class="form-group">
-                        <button type="button" class="download_button button" id="onedrive" title="Microsoft OneDrive" onclick="selectDownload(this)">
+                        <button type="button" class="download_button button selected_button" id="onedrive" title="Microsoft OneDrive" onclick="selectDownload(this)">
                             <p>Microsoft OneDrive</p>
                             <svg  width="" height="80%" xmlns="http://www.w3.org/2000/svg" viewBox="0 5.5 32 20.5"><title>OfficeCore10_32x_24x_20x_16x_01-22-2019</title><g id="STYLE_COLOR"><path d="M12.20245,11.19292l.00031-.0011,6.71765,4.02379,4.00293-1.68451.00018.00068A6.4768,6.4768,0,0,1,25.5,13c.14764,0,.29358.0067.43878.01639a10.00075,10.00075,0,0,0-18.041-3.01381C7.932,10.00215,7.9657,10,8,10A7.96073,7.96073,0,0,1,12.20245,11.19292Z" fill="#0364b8"/><path d="M12.20276,11.19182l-.00031.0011A7.96073,7.96073,0,0,0,8,10c-.0343,0-.06805.00215-.10223.00258A7.99676,7.99676,0,0,0,1.43732,22.57277l5.924-2.49292,2.63342-1.10819,5.86353-2.46746,3.06213-1.28859Z" fill="#0078d4"/><path d="M25.93878,13.01639C25.79358,13.0067,25.64764,13,25.5,13a6.4768,6.4768,0,0,0-2.57648.53178l-.00018-.00068-4.00293,1.68451,1.16077.69528L23.88611,18.19l1.66009.99438,5.67633,3.40007a6.5002,6.5002,0,0,0-5.28375-9.56805Z" fill="#1490df"/><path d="M25.5462,19.18437,23.88611,18.19l-3.80493-2.2791-1.16077-.69528L15.85828,16.5042,9.99475,18.97166,7.36133,20.07985l-5.924,2.49292A7.98889,7.98889,0,0,0,8,26H25.5a6.49837,6.49837,0,0,0,5.72253-3.41556Z" fill="#28a8ea"/></g></svg>
                         </button>
@@ -150,6 +150,8 @@ function sendEmail(data) {
             console.log("Erfolgreich gesendet:", result);
 
             try {
+                // Save full cart items (incl. images) into the stored order
+                data.items = getCartItemsForOrder();
                 // Clear the form
                 document.getElementById('orderForm')?.reset();
                 deleteOrders();
@@ -164,11 +166,30 @@ function sendEmail(data) {
 
             let confirm_message = '';
             let confirm_subject = '';
+            const itemsText = formatOrderItemsForEmail(data, language);
             if (language === 'de') {
-                confirm_message = "Vielen Dank für Ihre Bestellung! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld da wir alle Bestellungen manuell bearbeiten. \n\nFalls Sie Fragen haben können Sie uns jederzeit über die folgenden E-Mail Adresse kontaktieren: info@luftfahrt-archiv-hafner.de \n\nDies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.";
+                confirm_message =
+                    "Vielen Dank für Ihre Bestellung! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld, da wir alle Bestellungen manuell bearbeiten." +
+                    "\n\n" +
+                    `Bestellnummer: ${data.orderNumber}` +
+                    (data.orderdate ? `\nDatum: ${data.orderdate} Uhr` : '') +
+                    (data.payment ? `\nZahlungsmethode: ${data.payment}` : '') +
+                    (data.download ? `\nDownload-Methode: ${data.download}` : '') +
+                    (itemsText ? `\n\nBestellte Produkte:\n${itemsText}` : '') +
+                    "\n\nFalls Sie Fragen haben, können Sie uns jederzeit über folgende E-Mail-Adresse kontaktieren: info@luftfahrt-archiv-hafner.de" +
+                    "\n\nDies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.";
                 confirm_subject = "Vielen Dank für Ihre Bestellung! " + data.orderNumber;
             } else {
-                confirm_message = "Thank you for your order! We will get in touch with you shortly. Please be patient as we process all orders manually. \n\nIf you have any questions, feel free to contact us at: info@luftfahrt-archiv-hafner.de \n\nThis is an automatically generated email. Please do not reply to this email.";
+                confirm_message =
+                    "Thank you for your order! We will get in touch with you shortly. Please be patient as we process all orders manually." +
+                    "\n\n" +
+                    `Order ID: ${data.orderNumber}` +
+                    (data.orderdate ? `\nDate: ${data.orderdate}` : '') +
+                    (data.payment ? `\nPayment method: ${data.payment}` : '') +
+                    (data.download ? `\nDownload method: ${data.download}` : '') +
+                    (itemsText ? `\n\nOrdered items:\n${itemsText}` : '') +
+                    "\n\nIf you have any questions, feel free to contact us at: info@luftfahrt-archiv-hafner.de" +
+                    "\n\nThis is an automatically generated email. Please do not reply to this email.";
                 confirm_subject = "Thank you for your order! " + data.orderNumber;
             }
 
@@ -191,6 +212,25 @@ function sendEmail(data) {
             );
             hideSpinner();
         });
+}
+
+function formatOrderItemsForEmail(data, language) {
+    // Prefer structured items (includes image, price, etc.), fallback to plain products string.
+    if (Array.isArray(data?.items) && data.items.length > 0) {
+        return data.items
+            .map((item) => {
+                const parts = [item?.name, item?.id, item?.type].filter(Boolean);
+                return `- ${parts.join(' - ')}`;
+            })
+            .join('\n');
+    }
+
+    if (typeof data?.products === 'string' && data.products.trim()) {
+        const lines = data.products.split('\n').map(l => l.trim()).filter(Boolean);
+        return lines.map(l => `- ${l}`).join('\n');
+    }
+
+    return '';
 }
 
 function handleSubmit(event) {
@@ -347,6 +387,28 @@ function getProducts() {
     return products;
 }
 
+function getCartItemsForOrder() {
+    // Return full cart items (incl. image) so placedorder.html can render images.
+    const cartItems = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('LAH-')) {
+            const raw = getLocalStorageItem(key);
+            if (!raw) continue;
+
+            try {
+                cartItems.push(JSON.parse(raw));
+            } catch (e) {
+                console.error('Error parsing cart item JSON from localStorage:', e);
+                console.error('Key:', key);
+            }
+        }
+    }
+
+    return cartItems;
+}
+
 
 function selectPayment(button) {
     const paymentButtons = document.querySelectorAll('.payment_button');
@@ -360,11 +422,11 @@ function selectPayment(button) {
 }
 
 function selectDownload(button) {
-    const downloadButtons = document.querySelectorAll('.download_button');
-    if (button.classList.contains('selected_button')) {
-        button.classList.remove('selected_button');
-    } else {
-        downloadButtons.forEach(button => button.classList.remove('selected_button'));
+    // Microsoft OneDrive should always be active (not toggleable)
+    const onedriveButton = document.getElementById('onedrive');
+    if (onedriveButton) {
+        onedriveButton.classList.add('selected_button');
+    } else if (button) {
         button.classList.add('selected_button');
     }
     saveFormData();
@@ -432,6 +494,12 @@ function loadFormData() {
                 downloadButton.classList.add('selected_button');
             }
         }
+    }
+
+    // Ensure OneDrive is always selected
+    const onedriveButton = document.getElementById('onedrive');
+    if (onedriveButton) {
+        onedriveButton.classList.add('selected_button');
     }
 }
 

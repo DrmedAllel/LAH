@@ -62,8 +62,37 @@ async function loadOrders(identifier) {
 }
 
 function createOrderHTML(orderData, language) {
-    const products = orderData.products.split('\n');
-    const productsHTML = products.map(product => `<p>${product}</p>`).join('');
+    const items = Array.isArray(orderData.items) ? orderData.items : null;
+
+    const productsFromString = typeof orderData.products === 'string'
+        ? orderData.products.split('\n').filter(Boolean)
+        : [];
+
+    const productsHTML = (items && items.length > 0)
+        ? items.map((item) => {
+            const name = escapeHtml(item?.name || '');
+            const itemId = escapeHtml(item?.id || '');
+            const itemType = escapeHtml(item?.type || '');
+            const price = escapeHtml(item?.price || '');
+            const image = escapeHtml(item?.image || '');
+
+            const subtitleParts = [itemId, itemType].filter(Boolean);
+            const subtitle = subtitleParts.join(' · ');
+
+            return `
+                <div class="product_card">
+                    ${image
+                        ? `<img class="product_image" src="${image}" alt="${name || itemId}" loading="lazy">`
+                        : `<div class="product_image product_image_placeholder"></div>`}
+                    <div class="product_meta">
+                        <p class="product_title">${name || itemId}</p>
+                        ${subtitle ? `<p class="product_sub">${subtitle}</p>` : ''}
+                        ${price ? `<p class="product_sub">${price}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('')
+        : productsFromString.map(product => `<p>${escapeHtml(product)}</p>`).join('');
 
     console.log(orderData);
     return `
@@ -91,7 +120,6 @@ function createOrderHTML(orderData, language) {
                         <p>${language === 'de' ? `Die Bereitstellung erfolgt über die gewählte Methode: ${orderData.download || '-'}.` : `Delivery is provided via your selected method: ${orderData.download || '-'}.`}</p>
                     </div>
                 </div>
-                <p class="next_steps_note">${language === 'de' ? 'Fragen? Schreiben Sie uns jederzeit an' : 'Questions? Contact us anytime at'} <a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
             </div>
             <div class="order_data">
                 <p class="headline">${language === 'de' ? 'Bestellinformationen:' : 'Order information:'}</p>
@@ -104,7 +132,7 @@ function createOrderHTML(orderData, language) {
                 </br>
                 <p>${language === 'de' ? 'Bestellung: ' : 'Order: '}</p>
                 </br>
-                <div class="products">
+                <div class="products ${items && items.length > 0 ? 'products_grid' : ''}">
                     ${productsHTML}
                 </div>
             </div>
@@ -112,7 +140,13 @@ function createOrderHTML(orderData, language) {
         </div>
     `;
 }
-        const script = document.createElement('script');
 
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&callback=googleMapsCallback`;
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
 
