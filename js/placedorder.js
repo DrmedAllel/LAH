@@ -112,8 +112,8 @@ function createOrderHTML(orderData, language) {
                         <p>${language === 'de' ? 'Wir haben Ihre Bestellung erhalten und bearbeiten sie manuell. Bitte haben Sie etwas Geduld.' : 'We received your order and process it manually. Please be patient.'}</p>
                     </div>
                     <div class="step">
-                        <p class="step_title">${language === 'de' ? '2) Rechnung per E-Mail' : '2) Invoice by email'}</p>
-                        <p>${language === 'de' ? 'Wir erstellen Ihre Rechnung und senden diese an Ihre E-Mail-Adresse.' : 'We create your invoice and send it to your email address.'}</p>
+                        <p class="step_title">${language === 'de' ? '2) Rechnung & Bezahlung' : '2) Invoice & Payment'}</p>
+                        <p>${language === 'de' ? 'Wir erstellen Ihre Rechnung und senden diese an Ihre E-Mail-Adresse. Bitte bezahlen Sie erst nach Erhalt der Rechnung.' : 'We create your invoice and send it to your email address. Please pay only after receiving the invoice.'}</p>
                     </div>
                     <div class="step">
                         <p class="step_title">${language === 'de' ? '3) Download / Bereitstellung' : '3) Download / delivery'}</p>
