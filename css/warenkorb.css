@@ -357,3 +357,33 @@ h2 {
     border-top: 2px solid var(--text-color);
     padding-top: 1em;
 }
+
+/* Inline messages (replaces browser alerts) */
+.checkout-notice {
+    width: 100%;
+    max-width: 60em;
+    margin: 0 auto 1.5em auto;
+    padding: 1em 1.25em;
+    border-radius: 0.7em;
+    border: 1px solid var(--card-color);
+    background-color: rgba(0, 0, 0, 0.03);
+    color: var(--text-color);
+    font-size: 0.95em;
+    line-height: 1.35;
+    white-space: pre-line;
+}
+
+.checkout-notice--error {
+    border-color: var(--cancel-color);
+    background-color: rgba(255, 111, 99, 0.12);
+}
+
+.checkout-notice--success {
+    border-color: var(--confirm-color);
+    background-color: rgba(5, 255, 109, 0.10);
+}
+
+.checkout-notice--info {
+    border-color: var(--marked-color);
+    background-color: rgba(0, 117, 255, 0.08);
+}

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <h1 id='thank_you_header'>${language === 'de' ? 'Vielen Dank für Ihre Bestellung!' : 'Thank you for your order!'}</h1>
                                         <p class="note">${language === 'de' ? 'Wir bearbeiten Ihre Bestellung und senden Ihnen eine Rechnung per E-Mail. Bitte haben Sie etwas Geduld.' : 'We are processing your order and will send you an invoice by email. Please be patient.'}</p>
                                         <div id='order_container'></div>
-                                        <button id='back_to_shop' class='button' onclick="window.location.href='index.html'">${language === 'de' ? 'Zurück zur Startseite' : 'Back to Homepage'}</button>
+                                        <button id='back_to_shop' class='button' onclick="globalThis.location.href='index.html'">${language === 'de' ? 'Zurück zur Startseite' : 'Back to Homepage'}</button>
                                     `;
 
     loadOrders('#order_container');
@@ -31,8 +31,22 @@ async function loadOrders(identifier) {
     const ListOfOrders = getItemsWithHashFromLocalStorage();
 
     if (Object.keys(ListOfOrders).length === 0) {
-        alert(language === 'de' ? 'Keine Bestellungen gefunden' : 'No orders found');
-        window.location.href = 'index.html';
+        const header = document.getElementById('thank_you_header');
+        if (header) {
+            header.textContent = language === 'de' ? 'Keine Bestellungen gefunden' : 'No orders found';
+        }
+
+        if (elementToPaste) {
+            elementToPaste.innerHTML = `
+                <p class="note">
+                    ${language === 'de'
+                        ? 'Es wurden keine gespeicherten Bestellungen gefunden. Falls Sie gerade bestellt haben, laden Sie die Seite bitte neu oder gehen Sie zurück zur Startseite.'
+                        : 'No saved orders were found. If you just placed an order, please reload the page or go back to the homepage.'}
+                </p>
+            `;
+        }
+
+        hideSpinner();
         return;
     }
 
@@ -42,15 +56,15 @@ async function loadOrders(identifier) {
 
         const orderHTML = createOrderHTML(orderData, language);
         elementToPaste.innerHTML += orderHTML;
-        appendMap(orderData);
     }
+
+    hideSpinner();
 }
 
 function createOrderHTML(orderData, language) {
     const products = orderData.products.split('\n');
     const productsHTML = products.map(product => `<p>${product}</p>`).join('');
-    
-    const map_id = getMapId(orderData.orderNumber);
+
     console.log(orderData);
     return `
         <div class="order">
@@ -61,12 +75,23 @@ function createOrderHTML(orderData, language) {
                     <p class="thank_you">${language === 'de' ? 'Danke ' : 'Thank you '} ${orderData.first_name} ${orderData.last_name}!</p>
                 </div>
             </div>
-            <div class="map_container">
-                <div class="map" id="${map_id}"></div>
-                <div class="map_container_text">
-                    <p class="headline">${language === 'de' ? 'Wir haben Ihre Bestellung erhalten!' : 'We received your order!'}</p>
-                    <p class="">${language === 'de' ? 'Wir melden uns in Kürze bei Ihnen mit der zu bezahlenden Rechnung.' : 'We will contact you shortly with the invoice to be paid.'}</p>
+            <div class="next_steps">
+                <p class="headline">${language === 'de' ? 'Nächste Schritte' : 'Next steps'}</p>
+                <div class="steps">
+                    <div class="step">
+                        <p class="step_title">${language === 'de' ? '1) Bestellbestätigung' : '1) Order confirmation'}</p>
+                        <p>${language === 'de' ? 'Wir haben Ihre Bestellung erhalten und bearbeiten sie manuell. Bitte haben Sie etwas Geduld.' : 'We received your order and process it manually. Please be patient.'}</p>
+                    </div>
+                    <div class="step">
+                        <p class="step_title">${language === 'de' ? '2) Rechnung per E-Mail' : '2) Invoice by email'}</p>
+                        <p>${language === 'de' ? 'Wir erstellen Ihre Rechnung und senden diese an Ihre E-Mail-Adresse.' : 'We create your invoice and send it to your email address.'}</p>
+                    </div>
+                    <div class="step">
+                        <p class="step_title">${language === 'de' ? '3) Download / Bereitstellung' : '3) Download / delivery'}</p>
+                        <p>${language === 'de' ? `Die Bereitstellung erfolgt über die gewählte Methode: ${orderData.download || '-'}.` : `Delivery is provided via your selected method: ${orderData.download || '-'}.`}</p>
+                    </div>
                 </div>
+                <p class="next_steps_note">${language === 'de' ? 'Fragen? Schreiben Sie uns jederzeit an' : 'Questions? Contact us anytime at'} <a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
             </div>
             <div class="order_data">
                 <p class="headline">${language === 'de' ? 'Bestellinformationen:' : 'Order information:'}</p>
@@ -87,119 +112,7 @@ function createOrderHTML(orderData, language) {
         </div>
     `;
 }
-
-let googleMapsLoaded = false;
-let googleMapsLoadPromise = null;
-
-function initializeGoogleMapsAPI() {
-    if (googleMapsLoadPromise) return googleMapsLoadPromise;
-
-    googleMapsLoadPromise = new Promise((resolve, reject) => {
-        const key = 'ueigniurnvuesng';
-        const YOUR_API_KEY = decrypt('NCwTBj0QMRgXLDYUIwwAKgNdDQhQHUQdOS09HT4EOj9RNQAYQEIv', key);
-
-
         const script = document.createElement('script');
+
         script.src = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&callback=googleMapsCallback`;
-        script.async = true;
-        script.defer = true;
-        
-        window.googleMapsCallback = () => {
-            googleMapsLoaded = true;
-            resolve();
-        };
-        
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-
-    return googleMapsLoadPromise;
-}
-
-async function getLatLong(address) {
-    if (!googleMapsLoaded) {
-        await initializeGoogleMapsAPI();
-    }
-
-    return new Promise((resolve, reject) => {
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'address': address }, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
-                resolve(results[0].geometry.location);
-            } else {
-                reject(new Error(`Geocoding fehlgeschlagen: ${status}`));
-            }
-        });
-    });
-}
-
-function getMapId(orderNumber) {
-    const map_id = orderNumber.split('').reduce((hash, char) => {
-        return ((hash << 5) - hash) + char.charCodeAt(0) | 0;
-    }, 0).toString(36).replace(/\d/g, '');
-    return map_id;
-}
-
-async function appendMap(orderData) {
-    try {
-        if (!googleMapsLoaded) {
-            await initializeGoogleMapsAPI();
-        }
-        const adress = orderData.adress + ', ' + orderData.zip + ' ' + orderData.city + ', ' + orderData.country;
-        const adress_lat_long = await getLatLong(adress);
-        const map_id = getMapId(orderData.orderNumber);
-        const mapElement = document.getElementById(map_id);
-
-        if (!mapElement) {
-            throw new Error(`Map Element ${map_id} nicht gefunden`);
-        }
-
-        const map = new google.maps.Map(mapElement, {
-            center: adress_lat_long,
-            zoom: 15,
-            mapId: map_id,
-            disableDefaultUI: true,
-            zoomControl: false,
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false,
-            rotateControl: false,
-            scaleControl: false,
-            panControl: false,
-            gestureHandling: 'none',
-            scrollwheel: false,
-            draggable: false,
-            clickableIcons: false
-        });
-
-        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        
-        const marker = new google.maps.marker.AdvancedMarkerElement({
-            position: adress_lat_long,
-            map: map
-        });
-
-        const language = getCookie('language');
-
-        const infoWindow = new google.maps.InfoWindow({
-            content: `
-                <div class="marker">
-                    <p>${language === 'de' ? 'Lieferadresse:' : 'Delivery address:'}</p>
-                    <p>${adress}</p>
-                </div>
-            `
-        });
-        infoWindow.open(map, marker);
-
-    } catch (error) {
-        console.error('Fehler beim Laden der Karte:', error);
-        const mapElement = document.getElementById(map_id);
-        if (mapElement) {
-            mapElement.innerHTML = 'Karte konnte nicht geladen werden';
-        }
-    }
-    await new Promise(resolve => setTimeout(resolve, 500));
-    hideSpinner();
-}
-
 

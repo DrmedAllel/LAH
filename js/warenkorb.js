@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const formHTML = `
         <form id="orderForm" onsubmit="handleSubmit(event)">
+        <div id="checkoutNotice" class="checkout-notice" role="status" aria-live="polite" hidden></div>
         
         <div class="left-side">
             <div class="input_form">
@@ -107,7 +108,27 @@ function sendMailRequest(to, subject, message) {
             message: message,
         })
     })
-    .then(response => response.json());
+    .then(async (response) => {
+        const responseText = await response.text();
+        let parsed;
+
+        try {
+            parsed = responseText ? JSON.parse(responseText) : null;
+        } catch (parseError) {
+            parsed = {
+                ok: response.ok,
+                status: response.status,
+                body: responseText,
+                parseError: String(parseError)
+            };
+        }
+
+        if (!response.ok) {
+            throw new Error(`Mail request failed (${response.status}): ${responseText}`);
+        }
+
+        return parsed;
+    });
 }
 
 function sendEmail(data) {
@@ -128,19 +149,19 @@ function sendEmail(data) {
         .then(result => {
             console.log("Erfolgreich gesendet:", result);
 
-            //Clear the form
-            document.getElementById('orderForm').reset();
-            deleteOrders();
-            //Save the order element in the local storage as a jason element
-            setLocalStorageItem(data.orderNumber, JSON.stringify(data), 7);
-            //Clear the cart
-            clearCart();
-
-            if (language === 'de') {
-                alert("Ihre Bestellung wurde erfolgreich abgeschickt! Wir werden uns in Kürze bei Ihnen melden. Bitte haben Sie etwas Geduld.");
-            } else {
-                alert("Your order has been successfully submitted! We will get in touch with you shortly. Please be patient.");
+            try {
+                // Clear the form
+                document.getElementById('orderForm')?.reset();
+                deleteOrders();
+                // Save the order element in the local storage
+                setLocalStorageItem(data.orderNumber, JSON.stringify(data), 7);
+                // Clear the cart
+                clearCart();
+                clearCheckoutNotice();
+            } catch (cleanupError) {
+                console.error('Checkout cleanup failed:', cleanupError);
             }
+
             let confirm_message = '';
             let confirm_subject = '';
             if (language === 'de') {
@@ -151,17 +172,23 @@ function sendEmail(data) {
                 confirm_subject = "Thank you for your order! " + data.orderNumber;
             }
 
+            // Fire-and-forget confirmation mail (do not block redirect)
             sendMailRequest(data.email, confirm_subject, confirm_message)
-            //Redirect to the order confirmation page
-            window.location.href = '/index.html';
+                .then(r => console.log('Confirmation mail sent:', r))
+                .catch(e => console.warn('Confirmation mail failed:', e));
+
+            // Redirect to the order confirmation page (shows text + back button)
+            // Use relative URL to work on GitHub Pages subpaths as well.
+            globalThis.location.href = 'placedorder.html';
         })
         .catch(error => {
             console.error("Fehler beim Senden der E-Mail:", error);
-            if (language === 'de') {
-                alert("Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.");
-            } else {
-                alert("There was an error sending your order. Please try again or contact us directly.");
-            }
+            setCheckoutNotice(
+                language === 'de'
+                    ? 'Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.'
+                    : 'There was an error sending your order. Please try again or contact us directly.',
+                'error'
+            );
             hideSpinner();
         });
 }
@@ -170,13 +197,15 @@ function handleSubmit(event) {
     displaySpinner();
     //get language cookie
     const language = getCookie('language');
+    clearCheckoutNotice();
 
     if (getProducts() === '') {
-        if (language === 'de') {
-            alert("Bitte fügen Sie Produkte zum Warenkorb hinzu bevor Sie die Bestellung abschicken.");
-        } else {
-            alert("Please add products to the cart before submitting the order.");
-        }
+        setCheckoutNotice(
+            language === 'de'
+                ? 'Bitte fügen Sie Produkte zum Warenkorb hinzu, bevor Sie die Bestellung abschicken.'
+                : 'Please add products to the cart before submitting the order.',
+            'error'
+        );
         event.preventDefault();
         hideSpinner();
         return;
@@ -194,11 +223,12 @@ function handleSubmit(event) {
         data.payment = paymentButton.title;
     } catch (e) {
         console.error('Error getting payment method:', e);
-        if (language === 'de') {
-            alert("Bitte wählen Sie eine Zahlungsmethode bevor Sie die Bestellung abschicken.");
-        } else {
-            alert("Please select a payment method before submitting the order.");
-        }
+        setCheckoutNotice(
+            language === 'de'
+                ? 'Bitte wählen Sie eine Zahlungsmethode, bevor Sie die Bestellung abschicken.'
+                : 'Please select a payment method before submitting the order.',
+            'error'
+        );
         event.preventDefault();
         hideSpinner();
         return;
@@ -211,11 +241,12 @@ function handleSubmit(event) {
         console.error('Error getting download method:', e);
         //check if the products include the word 'download' and send an alert if true
         if (data.products.includes('download')) {
-            if (language === 'de') {
-                alert("Bitte wählen Sie eine Downloadmethode bevor Sie die Bestellung abschicken.");
-            } else {
-                alert("Please select a download method before submitting the order.");
-            }
+            setCheckoutNotice(
+                language === 'de'
+                    ? 'Bitte wählen Sie eine Downloadmethode, bevor Sie die Bestellung abschicken.'
+                    : 'Please select a download method before submitting the order.',
+                'error'
+            );
             event.preventDefault();
             hideSpinner();
             return;
@@ -228,9 +259,34 @@ function handleSubmit(event) {
     sendEmail(data);
 }
 
+function setCheckoutNotice(message, type = 'info') {
+    const notice = document.getElementById('checkoutNotice');
+    if (!notice) {
+        console.warn('checkoutNotice element not found');
+        return;
+    }
+
+    notice.classList.remove('checkout-notice--error', 'checkout-notice--success', 'checkout-notice--info');
+    notice.classList.add(`checkout-notice--${type}`);
+    notice.textContent = message;
+    notice.hidden = false;
+
+    if (typeof notice.scrollIntoView === 'function') {
+        notice.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function clearCheckoutNotice() {
+    const notice = document.getElementById('checkoutNotice');
+    if (!notice) return;
+    notice.textContent = '';
+    notice.hidden = true;
+    notice.classList.remove('checkout-notice--error', 'checkout-notice--success', 'checkout-notice--info');
+}
+
 function addOrderNumber(data) {
     //Generate a 5 Digit Order Number with a hashtag in front using Letters and Numbers based on the time in milliseconds and a random number
-    const orderNumber = "#" + Math.random().toString(36).substr(2, 5).toUpperCase();
+    const orderNumber = "#" + Math.random().toString(36).slice(2, 7).toUpperCase();
     data.orderNumber = orderNumber;
     return data;
 }
@@ -261,6 +317,7 @@ async function getIP() {
         const data = await response.json();
         return data.ip;
     } catch (error) {
+        console.warn('Error getting IP:', error);
         return 'Error getting IP'
     }
 }
