@@ -202,10 +202,6 @@ window.addEventListener('load', function () {
         const actions = document.createElement('div');
         actions.className = 'item_actions';
 
-        const label = document.createElement('label');
-        label.className = 'format_label';
-        label.textContent = 'Format:';
-
         const initialFormat = getInitialFormatForItem(ItemID);
         const formatSelect = createFormatSelect(language, initialFormat);
 
@@ -222,7 +218,6 @@ window.addEventListener('load', function () {
             updateStoredItemTypeIfPresent(ItemID, formatSelect.value);
         });
 
-        actions.appendChild(label);
         actions.appendChild(formatSelect);
         actions.appendChild(button);
         item.appendChild(actions);
