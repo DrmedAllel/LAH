@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <ul class="toc">
                 </ul>
             `;
-            mainSection.insertBefore(table_of_contents, firstItem);
+            firstItem.before(table_of_contents);
             generateTableOfContents();
         }
     }
@@ -131,23 +131,67 @@ document.addEventListener('click', function() {
     updateCartLink();
 });
 
-window.onload = function () {
-    //get all .item elements
+function getInitialFormatForItem(itemId) {
+    try {
+        const existing = getLocalStorageItem(itemId);
+        if (!existing) return 'download';
+        const parsed = JSON.parse(existing);
+        return parsed?.type || 'download';
+    } catch (e) {
+        console.warn('Could not read initial format for item:', itemId, e);
+        return 'download';
+    }
+}
+
+function createFormatSelect(language, initialValue) {
+    const select = document.createElement('select');
+    select.className = 'format_select';
+
+    const optionDownload = document.createElement('option');
+    optionDownload.value = 'download';
+    optionDownload.textContent = 'Download';
+
+    const optionDvd = document.createElement('option');
+    optionDvd.value = 'dvd';
+    optionDvd.textContent = 'DVD';
+
+    const optionBook = document.createElement('option');
+    optionBook.value = 'book';
+    optionBook.textContent = language === 'de' ? 'Buch' : 'Book';
+
+    // Order: Download / DVD / Book (matches checkout expectations)
+    select.appendChild(optionDownload);
+    select.appendChild(optionDvd);
+    select.appendChild(optionBook);
+
+    select.value = initialValue || 'download';
+    return select;
+}
+
+function updateStoredItemTypeIfPresent(itemId, selectedType) {
+    try {
+        const existing = getLocalStorageItem(itemId);
+        if (!existing) return;
+        const parsed = JSON.parse(existing);
+        parsed.type = selectedType;
+        setLocalStorageItem(itemId, JSON.stringify(parsed), 1);
+    } catch (e) {
+        console.warn('Could not update stored item type:', itemId, e);
+    }
+}
+
+window.addEventListener('load', function () {
     const items = document.getElementsByClassName('item');
     const language = getCookie('language');
 
-    //for each item add this button to the end of the div <button class="add-to-cart" id="LAH-508" onclick="editCartItem('LAH-508', 'Siebel Fh 104', '29.00', this)">In den Warenkorb</button>
     for (let item of items) {
-        const ItemTitle = item.getElementsByClassName('item_title')[0].innerText;
-        const ItemPrice = item.getElementsByClassName('price')[0].innerText;
-        let ItemID = item.getElementsByClassName('item-number')[0].innerText;
-        ItemID = ItemID.split(': ')[1];
-        
-        // Check if the item_image element exists
+        const ItemTitle = item.getElementsByClassName('item_title')[0]?.innerText || '';
+        const ItemPrice = item.getElementsByClassName('price')[0]?.innerText || '';
+        let ItemID = item.getElementsByClassName('item-number')[0]?.innerText || '';
+        ItemID = ItemID.split(': ')[1] || ItemID;
+
         const itemImageElement = item.getElementsByClassName('image_item')[0];
-        // Check if there exists an image element with the class itemThumbnail
         const itemThumbnailElement = item.getElementsByClassName('itemThumbnail')[0];
-        // If there is an itemThumbnail image, use that, otherwise use the item_image
         let ItemImage = '';
         if (itemThumbnailElement) {
             ItemImage = itemThumbnailElement.src;
@@ -155,14 +199,34 @@ window.onload = function () {
             ItemImage = itemImageElement.src;
         }
 
+        const actions = document.createElement('div');
+        actions.className = 'item_actions';
+
+        const label = document.createElement('label');
+        label.className = 'format_label';
+        label.textContent = 'Format:';
+
+        const initialFormat = getInitialFormatForItem(ItemID);
+        const formatSelect = createFormatSelect(language, initialFormat);
 
         const button = document.createElement('button');
         button.className = 'add-to-cart';
         button.id = ItemID;
-        button.setAttribute('onclick', `editCartItem('${ItemID}', '${ItemTitle}', '${ItemPrice}', 'download', '${ItemImage}', this)`);
         button.innerHTML = language === 'de' ? 'In den Warenkorb' : 'Add to Cart';
-        item.appendChild(button);
+
+        button.addEventListener('click', function () {
+            editCartItem(ItemID, ItemTitle, ItemPrice, formatSelect.value, ItemImage, button);
+        });
+
+        formatSelect.addEventListener('change', function () {
+            updateStoredItemTypeIfPresent(ItemID, formatSelect.value);
+        });
+
+        actions.appendChild(label);
+        actions.appendChild(formatSelect);
+        actions.appendChild(button);
+        item.appendChild(actions);
     }
 
     loadButtons();
-}
+});
