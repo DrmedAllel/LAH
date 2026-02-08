@@ -12,6 +12,7 @@ p {
 .note {
     width: 80%;
     text-align: center;
+    font-size: 1.25rem;
 }
 
 #order_note {

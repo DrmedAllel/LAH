@@ -117,7 +117,7 @@ function createOrderHTML(orderData, language) {
                     </div>
                     <div class="step">
                         <p class="step_title">${language === 'de' ? '3) Download / Bereitstellung' : '3) Download / delivery'}</p>
-                        <p>${language === 'de' ? `Die Bereitstellung erfolgt über die gewählte Methode: ${orderData.download || '-'}.` : `Delivery is provided via your selected method: ${orderData.download || '-'}.`}</p>
+                        <p>${language === 'de' ? `Nachdem Ihre Zahlung bei uns eingegangen ist, stellen wir Ihnen Ihre Bestellung gemäß der von Ihnen gewählten Download-Methode zur Verfügung. Sie erhalten eine Benachrichtigung per E-Mail, sobald Ihre Bestellung bereitsteht.` : `Once your payment has been received, we will make your order available according to the download method you chose. You will receive a notification by email once your order is ready.`}</p>
                     </div>
                 </div>
             </div>
