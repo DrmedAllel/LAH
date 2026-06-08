@@ -176,8 +176,9 @@ function sendEmail(data) {
                     (data.payment ? `\nZahlungsmethode: ${data.payment}` : '') +
                     (data.download ? `\nDownload-Methode: ${data.download}` : '') +
                     (itemsText ? `\n\nBestellte Produkte:\n${itemsText}` : '') +
-                    "\n\nFalls Sie Fragen haben, können Sie uns jederzeit über folgende E-Mail-Adresse kontaktieren: info@luftfahrt-archiv-hafner.de" +
+                    "\n\nFalls Sie Fragen haben oder Ihre Bestellung stornieren möchten, können Sie uns jederzeit über folgende E-Mail-Adresse kontaktieren: info@luftfahrt-archiv-hafner.de" +
                     "\n\nDies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.";
+
                 confirm_subject = "Vielen Dank für Ihre Bestellung! " + data.orderNumber;
             } else {
                 confirm_message =
@@ -188,7 +189,7 @@ function sendEmail(data) {
                     (data.payment ? `\nPayment method: ${data.payment}` : '') +
                     (data.download ? `\nDownload method: ${data.download}` : '') +
                     (itemsText ? `\n\nOrdered items:\n${itemsText}` : '') +
-                    "\n\nIf you have any questions, feel free to contact us at: info@luftfahrt-archiv-hafner.de" +
+                    "\n\nIf you have any questions or want to cancel your order, feel free to contact us at: info@luftfahrt-archiv-hafner.de" +
                     "\n\nThis is an automatically generated email. Please do not reply to this email.";
                 confirm_subject = "Thank you for your order! " + data.orderNumber;
             }

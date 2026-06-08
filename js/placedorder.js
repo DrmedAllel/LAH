@@ -136,7 +136,7 @@ function createOrderHTML(orderData, language) {
                     ${productsHTML}
                 </div>
             </div>
-            <p class="order_note">${language === 'de' ? 'Wenn Sie Fragen zu Ihrer Bestellung haben, kontaktieren Sie uns bitte unter:' : 'If you have any questions about your order, please contact us at:'} <a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
+            <p class="order_note">${language === 'de' ? 'Wenn Sie Fragen zu Ihrer Bestellung haben oder Ihre Bestellung stornieren möchten, kontaktieren Sie uns bitte unter:' : 'If you have any questions about your order or want to cancel it, please contact us at:'} <a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
         </div>
     `;
 }
