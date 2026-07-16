@@ -2,7 +2,7 @@ nav {
     height: 7rem;
     top: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 1;
     background-color: var(--background-color);
 }
 
