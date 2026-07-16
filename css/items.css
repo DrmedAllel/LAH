@@ -77,7 +77,8 @@ main {
 }
 
 .table_of_contents a:hover{
-    color: var(--accent-color);
+    color: #A5A5A5;
+    text-decoration: underline;
     transition: 0.25s;
 }
 
