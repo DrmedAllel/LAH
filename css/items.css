@@ -218,26 +218,15 @@ main {
 }
 
 .info{
-    display: flex;
     background-color: var(--background-color);
     border-radius: 50%;
-    border: 1px solid var(--card-color);
     position: fixed;
-    bottom: 3%;
+    bottom: 5%;
     left: 7.5%;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5em;
-    padding: 0.125em;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 2.5rem;
     transition: 0.25s;
-}
-
-.info svg{
-    width: auto;
-    height: 4em;
-    padding: 1em;
 }
 
 #close_order_info{
