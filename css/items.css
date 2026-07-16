@@ -60,6 +60,14 @@ main {
     width: 100%;
 }
 
+.toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.5em;
+    width: 100%;
+}
+
+
 
 .table_of_contents h2{
     font-size: 1.25em;
@@ -70,7 +78,6 @@ main {
 
 .table_of_contents a{
     font-size: 1em;
-    font-weight: 700;
     color: var(--text-color);
     transition: 0.25s;
     text-decoration: none;
