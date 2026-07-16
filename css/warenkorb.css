@@ -6,7 +6,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 80%;
     min-width: 40em;
     width: 100vw
 }

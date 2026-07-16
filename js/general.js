@@ -51,7 +51,7 @@ function buildNavLink(href, label, extraClasses = '') {
 function buildCartLink(href, label, extraClasses = '') {
   return `
         <li class="nav-item">
-          <a class="nav-link px-lg-3 py-2 ${extraClasses}" href="${href}">${label}<p class="cart_count"></p></a>
+          <a class="nav-link px-lg-3 py-2 ${extraClasses}" href="${href}"><i class="fa-solid fa-cart-shopping"></i>  ${label}<p class="cart_count"></p></a>
         </li>
   `;
 }
