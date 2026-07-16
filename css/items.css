@@ -83,7 +83,7 @@ main {
 
 @media (max-width: 1300px) {
     .item, .table_of_contents{
-        width: 80%;
+        width: 90%;
     }
 }
 

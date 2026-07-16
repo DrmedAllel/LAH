@@ -41,6 +41,7 @@ main h2 {
     color: #a5a5a5;
     text-decoration: none;
     transition: color 0.3s ease;
+    text-align: center;
 }
 
 .links a:hover {

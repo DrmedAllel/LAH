@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (footer && !footer.children.length) {
     const language = getCookie('language');
     footer.innerHTML = `
-    <p>Luftfahrt-Archiv Hafner, Udo Hafner, 1990 - ${new Date().getFullYear()}</p>
+    <p class="footer_imprint">Luftfahrt-Archiv Hafner, Udo Hafner, 1990 - ${new Date().getFullYear()}</p>
     <a href="/agb.html">${language === 'de' ? 'AGB' : 'Terms'}</a>
     <a href="/links.html">Links</a>
     <a href="/about.html">${language === 'de' ? 'Wir über uns' : 'About Us'}</a>
