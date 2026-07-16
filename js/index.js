@@ -69,6 +69,8 @@ globalThis.addEventListener('DOMContentLoaded', function() {
         <img src="images/landing_page/landing_page1.png" alt="Luftfahrt-Archiv Hafner Flugzeug" id="flugzeug_img">
         <h2>${language === 'de' ? 'Deutsche Luftfahrttechnik 1928 - 1945' : 'German Aviation Technology 1928 - 1945'}</h2>
         <p>${language === 'de' ? 'Flugzeug -, Motoren- und Waffen-Handbücher, Betriebsanleitungen, Ersatzteillisten,</br> Bedienungsvorschriften, Luftschrauben-Anlagen, Montage - und Reparaturanleitungen' : 'Aircraft, engine and weapon manuals, operating instructions, spare parts lists,</br> operating instructions, propeller systems, assembly and repair instructions'}</p>
-        <p><a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
+        <div class="links">
+            <a href="mailto:info@luftfahrt-archiv-hafner.de" class="button"><i class="fa-solid fa-envelope"></i> info@luftfahrt-archiv-hafner.de</a>
+        </div>
     ` + mainSection.innerHTML;
 });

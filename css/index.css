@@ -35,3 +35,22 @@ main h2 {
     text-align: center;
     white-space: break-spaces;
 }
+
+.links a {
+    font-size: 1rem;
+    color: #a5a5a5;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.links a:hover {
+    text-decoration: underline;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}

@@ -12,4 +12,10 @@ nav {
 
 nav .container-fluid {
     flex-wrap: nowrap !important;
+    align-items: center !important;
+}
+
+nav .nav-item {
+    display: flex;
+    align-items: center;
 }
