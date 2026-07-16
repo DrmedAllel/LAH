@@ -57,16 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const mainSection = document.querySelector('main');
-    const cartDiv = document.createElement('div');
-    cartDiv.className = 'shopping_cart';
-    cartDiv.innerHTML = `
-        <a href="../warenkorb.html" title="Warenkorb">
-            <p class="cart_count"></p>
-            <img src="../images/shopping-cart.png" alt="Shopping Cart" class="shopping_cart_icon cart_link">
-        </a>
-    `;
-    mainSection.appendChild(cartDiv);
-    updateCartLink();
 
     const infoDiv = document.createElement('div');
     infoDiv.className = 'info';
@@ -117,14 +107,6 @@ function generateTableOfContents() {
     });
 }
 
-function updateCartLink() {
-    //change the number of items in the cart link
-    let CountInCart = getCart().length;
-    const cartCount = document.querySelector('.cart_count');
-    if (cartCount) {
-        cartCount.innerHTML = CountInCart;
-    }
-}
 
 document.addEventListener('click', function() {
     //every time the user clicks on the page update the cart link

@@ -1,0 +1,15 @@
+nav {
+    height: 7rem;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: var(--background-color);
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+nav .container-fluid {
+    flex-wrap: nowrap !important;
+}

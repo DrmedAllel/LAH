@@ -13,7 +13,7 @@ window.addEventListener('load', function() {
 setInterval(async function() {
     const flugzeugImg = document.getElementById('flugzeug_img');
     let newNumber;
-    const currentNumber = parseInt(flugzeugImg.src.match(/\d+(?=\.png$)/)[0]);
+    const currentNumber = Number.parseInt(flugzeugImg.src.match(/\d+(?=\.png$)/)[0], 10);
     
     if (currentNumber === NUMBER_OF_IMAGES) {
         newNumber = 1;
@@ -50,7 +50,7 @@ function fadeIn(element, duration) {
     
     const timer = setInterval(() => {
         if (element.style.opacity < 1) {
-            element.style.opacity = parseFloat(element.style.opacity) + step;
+            element.style.opacity = Number.parseFloat(element.style.opacity) + step;
         } else {
             element.style.opacity = 1;
             clearInterval(timer);
@@ -58,16 +58,17 @@ function fadeIn(element, duration) {
     }, 10);
 }
 
-window.addEventListener('DOMContentLoaded', function() {
+globalThis.addEventListener('DOMContentLoaded', function() {
     const mainSection = document.querySelector('main');
+    if (!mainSection || mainSection.querySelector('#logo')) {
+        return;
+    }
     const language = getCookie('language');
 
     mainSection.innerHTML = `
-        <img src="images/logo.png" alt="Luftfahrt-Archiv Hafner Logo" id="logo">
         <img src="images/landing_page/landing_page1.png" alt="Luftfahrt-Archiv Hafner Flugzeug" id="flugzeug_img">
         <h2>${language === 'de' ? 'Deutsche Luftfahrttechnik 1928 - 1945' : 'German Aviation Technology 1928 - 1945'}</h2>
         <p>${language === 'de' ? 'Flugzeug -, Motoren- und Waffen-Handbücher, Betriebsanleitungen, Ersatzteillisten,</br> Bedienungsvorschriften, Luftschrauben-Anlagen, Montage - und Reparaturanleitungen' : 'Aircraft, engine and weapon manuals, operating instructions, spare parts lists,</br> operating instructions, propeller systems, assembly and repair instructions'}</p>
         <p><a href="mailto:info@luftfahrt-archiv-hafner.de">info@luftfahrt-archiv-hafner.de</a></p>
     ` + mainSection.innerHTML;
 });
-

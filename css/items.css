@@ -19,10 +19,18 @@ main {
     margin-bottom: 5em;
 }
 
-.manufacturer_title h2{
+.manufacturer_title h1, .page_title{
     font-size: 2em;
+    font-weight: 600;
+    color: var(--text-color);
+    padding-bottom: 0.5em;
+}
+
+.item h3{
+    font-size: 1.25em;
     font-weight: 700;
     color: var(--text-color);
+    margin-top: 0;
 }
 
 .manufacturer_title img{
@@ -119,6 +127,7 @@ main {
     justify-content: center;
     gap: 0.5em;
     margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 .item_images img{
@@ -208,47 +217,6 @@ main {
     color: var(--text-color);
 }
 
-.shopping_cart{
-    display: flex;
-    background-color: var(--background-color);
-    border-radius: 50%;
-    border: 1px solid var(--card-color);
-    position: fixed;
-    bottom: 3%;
-    right: 7.5%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5em;
-    padding: 0.125em;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: 0.25s;
-}
-
-.shopping_cart img{
-    width: auto;
-    height: 4em;
-    padding: 1em;
-}
-
-.cart_count {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    border-radius: 100%;
-    background-color: var(--cancel-color);
-    color: var(--text-color);
-    font-size: 1em;
-    position: absolute;
-    top: -0.5em;
-    right: 0;
-    width: 2em;
-    height: 2em;
-    z-index: 1;
-}
-
-
 .info{
     display: flex;
     background-color: var(--background-color);
@@ -270,11 +238,6 @@ main {
     width: auto;
     height: 4em;
     padding: 1em;
-}
-
-.shopping_cart:hover, .info:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: 0.25s;
 }
 
 #close_order_info{

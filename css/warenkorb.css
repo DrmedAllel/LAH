@@ -3,7 +3,6 @@ html {
 }
 
 main {
-    margin-top: 5em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,6 +13,14 @@ main {
 
 h1 {
     margin-bottom: 2em;
+}
+
+#orderForm h2 {
+    margin-top: 2em;
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--text-color);
+    white-space: break-spaces;
 }
 
 
@@ -34,7 +41,6 @@ h1 {
         align-items: center;
         justify-content: center;
         height: auto;
-        width: 80vw;
         padding-left: 10vw;
         padding-right: 10vw;
         padding-bottom: 10em;
@@ -339,12 +345,15 @@ h2 {
     margin-left: auto;
     font-size: 1em;
     font-weight: 700;
-    width: auto;
-    height: auto;
-    border-radius: 0.7em;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 25%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .add-to-cart:hover{

@@ -1,0 +1,64 @@
+# Luftfahrt-Archiv Hafner
+
+Luftfahrt-Archiv Hafner ist ein privates Archiv und Versandhandel für Reproduktionen deutscher Luftfahrtunterlagen aus der Zeit 1928 bis 1945.
+Angeboten werden Reproduktionen von Flugzeug-, Motoren- und Waffen-Handbüchern, Betriebsanleitungen, Ersatzteillisten, Bedienungsvorschriften, Luftschrauben-Anlagen, Montage- und Reparaturanleitungen.
+Die Dateien entsprechen bestem Qualitätsstandard und entstammen eingescannten Originalunterlagen, die anschließend händisch nachbearbeitet wurden. Die Reproduktionen sind als PDF, DVD und Buchreproduktionen erhältlich. Die Reproduktionen sind urheberrechtlich geschützt und dürfen nicht ohne Genehmigung des Luftfahrt-Archivs Hafner weitergegeben werden.
+
+## Wichtige Seiten
+
+- https://luftfahrt-archiv-hafner.de/
+- https://luftfahrt-archiv-hafner.de/about.html
+- https://luftfahrt-archiv-hafner.de/impressum.html
+- https://luftfahrt-archiv-hafner.de/datenschutz.html
+- https://luftfahrt-archiv-hafner.de/agb.html
+
+## Inhalte, die zitiert werden dürfen
+
+- Archivbeschreibung und Kontaktinformationen
+- Hersteller- und Kategorienseiten
+- Öffentliche Hinweise zu Bestellung, Versand und Verfügbarkeit
+
+## Inhalte, die nicht als Volltext reproduziert werden sollten
+
+- Kommerzielle Reproduktionen, PDF-Dateien und geschützte Dokumentinhalte
+- Vollständige technische Dokumente aus dem Verkaufsbestand
+
+## Angebot
+
+### Flugzeuge
+- Ago
+- Arado
+- Blohm & Voss
+- Bücker
+- DFS
+- Dornier
+- Fieseler
+- Focke-Wulf
+- Focke-Achgelis
+- Gotha
+- Heinkel
+- Henschel
+- Junkers
+- Klemm
+- Messerschmitt
+- Segelflugzeuge
+- Siebel
+
+### Motoren & Luftschrauben
+- Argus
+- BMW
+- Daimler-Benz
+- Gnome-Rhône
+- Hirth
+- Junkers JUMO Flugmotoren und Luftschrauben
+- Oberursel
+- Salmson
+- Siemens Bramo
+- VDM
+- Vergaser und Einspritzanlagen
+- Walter HWK
+- Zündapp
+
+## Kontakt
+
+info@luftfahrt-archiv-hafner.de

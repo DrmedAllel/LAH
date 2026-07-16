@@ -90,27 +90,11 @@ function editCartItem(itemId, itemName, itemPrice, itemType, itemImage, button) 
     }
 
     loadCart();
+    updateCartLink();
 }
 
 window.onload = function() {
     loadCart();
-}
-
-function getCart() {
-    const cart = [];
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('LAH-')) {
-            try {
-                getLocalStorageItem(key);
-                cart.push(JSON.parse(getLocalStorageItem(key)));
-            } catch (e) {
-                console.error('Error parsing JSON from localStorage:', e);
-                console.error('Key:', key);
-            }
-        }
-    }
-    return cart;
 }
 
 function loadCart() {
@@ -156,7 +140,7 @@ function loadCart() {
                         <p class="ItemID">ID: ${item.id}</p>
                         <p class="ItemPrice">${item.price}</p>
                     </div>
-                    <button class="add-to-cart" onclick="editCartItem('${item.id}', '${item.name}', '${item.price}', '${item.option}', this);">×</button>
+                    <button class="add-to-cart" onclick="editCartItem('${item.id}', '${item.name}', '${item.price}', '${item.option}', this);"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
             `;

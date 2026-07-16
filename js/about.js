@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const mainSection = document.querySelector('main');
+    if (!mainSection || mainSection.querySelector('#image_gallery')) {
+        return;
+    }
     const language = getCookie('language');
 
     mainSection.innerHTML = `

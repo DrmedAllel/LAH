@@ -1,185 +1,240 @@
-document.addEventListener('DOMContentLoaded', function() {
+const BOOTSTRAP_CSS_URL = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css';
+const BOOTSTRAP_JS_URL = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js';
+const CUSTOM_NAV_CSS_URL = '/css/bootstrap-custom.css';
+
+function ensureStylesheet(href, referenceHref, position = 'after') {
+  if (document.querySelector(`link[href="${href}"]`)) {
+    return;
+  }
+
   const link = document.createElement('link');
-  link.rel = 'icon';
-  link.href = '/images/favicon.png';
+  link.rel = 'stylesheet';
+  link.href = href;
+
+  const referenceLink = referenceHref ? document.querySelector(`link[href$="${referenceHref}"]`) : null;
+  if (referenceLink?.parentNode) {
+    if (position === 'before') {
+      referenceLink.parentNode.insertBefore(link, referenceLink);
+    } else {
+      referenceLink.parentNode.insertBefore(link, referenceLink.nextSibling);
+    }
+    return;
+  }
+
   document.head.appendChild(link);
+}
+
+function ensureScript(src) {
+  if (document.querySelector(`script[src="${src}"]`)) {
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = src;
+  script.async = true;
+  document.head.appendChild(script);
+}
+
+ensureStylesheet(BOOTSTRAP_CSS_URL, 'css/general.css', 'before');
+ensureStylesheet(CUSTOM_NAV_CSS_URL, 'css/general.css', 'after');
+ensureScript(BOOTSTRAP_JS_URL);
+ensureScript('https://kit.fontawesome.com/4fdca3d787.js');
+
+function buildNavLink(href, label, extraClasses = '') {
+  return `
+        <li class="nav-item">
+          <a class="nav-link px-lg-3 py-2 ${extraClasses}" href="${href}">${label}</a>
+        </li>
+  `;
+}
+
+function buildCartLink(href, label, extraClasses = '') {
+  return `
+        <li class="nav-item">
+          <a class="nav-link px-lg-3 py-2 ${extraClasses}" href="${href}">${label}<p class="cart_count"></p></a>
+        </li>
+  `;
+}
+
+function buildNavDropdown(title, items) {
+  const menuItems = items.map(item => `
+            <li><a class="dropdown-item${item.active ? ' active' : ''}" href="${item.href}">${item.label}</a></li>
+  `).join('');
+
+  return `
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle px-lg-3 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ${title}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+${menuItems}
+          </ul>
+        </li>
+  `;
+}
+
+function buildLanguageDropdown(language) {
+  const isGerman = language !== 'en';
+
+  return `
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle px-lg-3 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-language"></i>${isGerman ? ' Sprache' : ' Language'}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li>
+              <button class="dropdown-item${isGerman ? ' active' : ''}" type="button" onclick="setLanguage('de')">Deutsch</button>
+            </li>
+            <li>
+              <button class="dropdown-item${!isGerman ? ' active' : ''}" type="button" onclick="setLanguage('en')">English</button>
+            </li>
+          </ul>
+        </li>
+  `;
+}
+
+function buildNavbar(language) {
+  return `
+    <nav class="navbar navbar-expand-lg navbar-light bg-body-white border border-1 shadow-sm px-3 py-2 site-navbar" data-bs-theme="light" aria-label="Hauptnavigation">
+      <div class="container-fluid">
+        <a class="navbar-brand site-navbar-brand me-lg-4" style="display: flex; align-items: center; gap: 1rem;" href="/index.html" title="${language === 'de' ? 'Startseite' : 'Homepage'}">
+          <img src="../images/logo.png" alt="Logo" width="auto" height="70px" class="d-inline-block align-text-top">
+          <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span>Luftfahrt-Archiv Hafner</span>
+            <small style="font-size: 0.75rem;">${language === 'de' ? 'gegr. 1990' : 'est. 1990'}</small>
+            <small style="font-size: 0.75rem;">Ludwigsburg, ${language === 'de' ? 'Deutschland' : 'Germany'}</small>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">${language === 'de' ? 'Hauptnavigation' : 'Main Navigation'}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              ${buildNavDropdown(language === 'de' ? 'Flugzeuge' : 'Aircraft', [
+                { href: '/Flugzeuge/arado.html', label: 'Arado' },
+                { href: '/Flugzeuge/ago.html', label: 'AGO' },
+                { href: '/Flugzeuge/blohm_voss.html', label: 'Blohm & Voss' },
+                { href: '/Flugzeuge/bücker.html', label: 'Bücker' },
+                { href: '/Flugzeuge/dfs.html', label: 'DFS' },
+                { href: '/Flugzeuge/dornier.html', label: 'Dornier' },
+                { href: '/Flugzeuge/erla.html', label: 'Erla' },
+                { href: '/Flugzeuge/fieseler.html', label: 'Fieseler' },
+                { href: '/Flugzeuge/focke-achgelis.html', label: 'Focke-Achgelis' },
+                { href: '/Flugzeuge/focke_wulf.html', label: 'Focke Wulf' },
+                { href: '/Flugzeuge/gotha.html', label: 'Gotha' },
+                { href: '/Flugzeuge/heinkel.html', label: 'Heinkel' },
+                { href: '/Flugzeuge/henschel.html', label: 'Henschel' },
+                { href: '/Flugzeuge/junkers.html', label: 'Junkers' },
+                { href: '/Flugzeuge/klemm.html', label: 'Klemm' },
+                { href: '/Flugzeuge/messerschmitt.html', label: 'Messerschmitt' },
+                { href: '/Flugzeuge/segelflugzeuge.html', label: language === 'de' ? 'Segelflugzeuge' : 'Gliders' },
+                { href: '/Flugzeuge/siebel.html', label: 'Siebel' }
+              ])}
+              ${buildNavDropdown(language === 'de' ? 'Motoren & Luftschrauben' : 'Engines & Propellers', [
+                { href: '/Motoren_Luftschrauben/argus.html', label: 'Argus' },
+                { href: '/Motoren_Luftschrauben/bmw.html', label: 'BMW' },
+                { href: '/Motoren_Luftschrauben/daimler_benz.html', label: 'Daimler Benz' },
+                { href: '/Motoren_Luftschrauben/gnome_rhone.html', label: 'Gnome Rhone' },
+                { href: '/Motoren_Luftschrauben/hirth.html', label: 'Hirth' },
+                { href: '/Motoren_Luftschrauben/jumo.html', label: 'JUMO' },
+                { href: '/Motoren_Luftschrauben/oberursel.html', label: 'Oberursel' },
+                { href: '/Motoren_Luftschrauben/salmson.html', label: 'Salmson' },
+                { href: '/Motoren_Luftschrauben/siemens_bramo.html', label: 'Siemens - BRAMO' },
+                { href: '/Motoren_Luftschrauben/vdm.html', label: 'VDM' },
+                { href: '/Motoren_Luftschrauben/vergaser_einspritzanlagen.html', label: language === 'de' ? 'Vergaser und Einspritzanlagen' : 'Carburetors and Injection Systems' },
+                { href: '/Motoren_Luftschrauben/walter.html', label: `Walter ${language === 'de' ? 'Motoren' : 'Engines'}` },
+                { href: '/Motoren_Luftschrauben/walter_hwk.html', label: 'Walter HWK' },
+                { href: '/Motoren_Luftschrauben/zuendapp.html', label: 'Zündapp' }
+              ])}
+              ${buildNavLink('/Zusatz/flugzeug_bewaffnung.html', language === 'de' ? 'Flugzeug-Bewaffnung' : 'Aircraft Armament')}
+              ${buildNavLink('/Zusatz/flugzeug_ausruestung.html', language === 'de' ? 'Flugzeug-Ausrüstung' : 'Aircraft Equipment')}
+              ${buildCartLink('/warenkorb.html', language === 'de' ? 'Warenkorb' : 'Cart', 'cart-link')}
+              ${buildLanguageDropdown(language)}
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const faviconLink = document.createElement('link');
+  faviconLink.rel = 'icon';
+  faviconLink.href = '/images/favicon.png';
+  document.head.appendChild(faviconLink);
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  // add navigation to the header
   const header = document.querySelector('header');
   if (header) {
-      const language = getCookie('language');
-      header.innerHTML = `
-          <h1><a href="/index.html" title="${language === 'de' ? 'Startseite' : 'Homepage'}">Luftfahrt-Archiv Hafner</a></h1>
-          <p>${language === 'de' ? 'gegr. 1990' : 'est. 1990'}</p>
-          <nav>
-            <div class="dropdown">
-              <h2 class="title">${language === 'de' ? 'Flugzeuge' : 'Aircraft'}</h2>
-              <ul class="submenu">
-                <a href="/Flugzeuge/arado.html">Arado</a>
-                <a href="/Flugzeuge/ago.html">AGO</a>
-                <a href="/Flugzeuge/blohm_voss.html">Blohm & Voss</a>
-                <a href="/Flugzeuge/bücker.html">Bücker</a>
-                <a href="/Flugzeuge/dfs.html">DFS</a>
-                <a href="/Flugzeuge/dornier.html">Dornier</a>
-                <a href="/Flugzeuge/erla.html">Erla</a>
-                <a href="/Flugzeuge/fieseler.html">Fieseler</a>
-                <a href="/Flugzeuge/focke-achgelis.html">Focke-Achgelis</a>
-                <a href="/Flugzeuge/focke_wulf.html">Focke Wulf</a>
-                <a href="/Flugzeuge/gotha.html">Gotha</a>
-                <a href="/Flugzeuge/heinkel.html">Heinkel</a>
-                <a href="/Flugzeuge/henschel.html">Henschel</a>
-                <a href="/Flugzeuge/junkers.html">Junkers</a>
-                <a href="/Flugzeuge/klemm.html">Klemm</a>
-                <a href="/Flugzeuge/messerschmitt.html">Messerschmitt</a>
-                <a href="/Flugzeuge/segelflugzeuge.html">${language === 'de' ? 'Segelflugzeuge' : 'Gliders'}</a>
-                <a href="/Flugzeuge/siebel.html">Siebel</a>
-              </ul>
-            </div>
-
-            <div class="dropdown">
-              <h2 class="title">${language === 'de' ? 'Motoren & Luftschrauben' : 'Engines & Propellers'}</h2>
-              <ul class="submenu">
-                <a href="/Motoren_Luftschrauben/argus.html">Argus</a>
-                <a href="/Motoren_Luftschrauben/bmw.html">BMW</a>
-                <a href="/Motoren_Luftschrauben/daimler_benz.html">Daimler Benz</a>
-                <a href="/Motoren_Luftschrauben/gnome_rhone.html">Gnome Rhone</a>
-                <a href="/Motoren_Luftschrauben/hirth.html">Hirth</a>
-                <a href="/Motoren_Luftschrauben/jumo.html">JUMO</a>
-                <a href="/Motoren_Luftschrauben/oberursel.html">Oberursel</a>
-                <a href="/Motoren_Luftschrauben/salmson.html">Salmson</a>
-                <a href="/Motoren_Luftschrauben/siemens_bramo.html">Siemens - BRAMO</a>
-                <a href="/Motoren_Luftschrauben/vdm.html">VDM</a>
-                <a href="/Motoren_Luftschrauben/vergaser_einspritzanlagen.html">${language === 'de' ? 'Vergaser und Einspritzanlagen' : 'Carburetors and Injection Systems'}</a>
-                <a href="/Motoren_Luftschrauben/walter.html">Walter ${language === 'de' ? 'Motoren' : 'Engines'}</a>
-                <a href="/Motoren_Luftschrauben/walter_hwk.html">Walter HWK</a>
-                <a href="/Motoren_Luftschrauben/zuendapp.html">Zündapp</a>
-              </ul>
-            </div>
-
-            <div class="dropdown">
-              <a class="title title_link" href="/Zusatz/flugzeug_bewaffnung.html">${language === 'de' ? 'Flugzeug-Bewaffnung' : 'Aircraft Armament'}</a>
-            </div>
-
-            <div class="dropdown">
-              <a class="title title_link" href="/Zusatz/flugzeug_ausruestung.html">${language === 'de' ? 'Flugzeug-Ausrüstung' : 'Aircraft Equipment'}</a>
-            </div>
-
-            <div class="dropdown">
-              <a class="title cart_link title_link" href="/warenkorb.html">${language === 'de' ? 'Warenkorb' : 'Cart'}</a>
-            </div>
-          </nav>
-      `;
+    const language = getCookie('language');
+    header.innerHTML = buildNavbar(language);
   }
-  mobileMenu();
 });
 
-
 document.addEventListener('DOMContentLoaded', function() {
-    // add footer to the page
-    const footer = document.querySelector('footer');
-    if (footer) {
-      const language = getCookie('language');
-      footer.innerHTML = `
+  const footer = document.querySelector('footer');
+  if (footer && !footer.children.length) {
+    const language = getCookie('language');
+    footer.innerHTML = `
     <p>Luftfahrt-Archiv Hafner, Udo Hafner, 1990 - ${new Date().getFullYear()}</p>
-    <a href="/agb.html">${language === 'de' ? 'AGB' : 'Terms'}</a> 
-    <a href="/links.html">Links</a> 
+    <a href="/agb.html">${language === 'de' ? 'AGB' : 'Terms'}</a>
+    <a href="/links.html">Links</a>
     <a href="/about.html">${language === 'de' ? 'Wir über uns' : 'About Us'}</a>
     <a href="/impressum.html">${language === 'de' ? 'Impressum' : 'Imprint'}</a>
-      `;
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  // add the language selection to the page
-  const main = document.querySelector('main');
-  if (main) {
-      console.log(window.location.href);
-      if (!window.location.href.includes('127.0.0.1:3000')) {
-        main.innerHTML = `
-        <div id="language_selection">
-          <img src="/images/language_selection/germany.png" alt="Germany Flag" id="germany_flag" class="flag flag_active" title="Seite auf Deutsch">
-          <img src="/images/language_selection/uk.png" alt="UK Flag" id="uk_flag" class="flag" title="Page in English">
-        </div>
-        ` + main.innerHTML;
-      } else {
-        main.innerHTML = `
-        <div id="language_selection">
-          <img src="/images/language_selection/germany.png" alt="Germany Flag" id="germany_flag" class="flag flag_active" title="Seite auf Deutsch">
-          <img src="/images/language_selection/uk.png" alt="UK Flag" id="uk_flag" class="flag" title="Page in English">
-        </div>
-        ` + main.innerHTML;
-        console.log('Local Test'); 
-      }
+    <a href="/datenschutz.html">${language === 'de' ? 'Datenschutz' : 'Privacy'}</a>
+    `;
   }
 });
-  
 
-
-
-function mobileMenu() {
-  const main = document.querySelector('main');
-  main.innerHTML = `
-  <div id="menu_button" class="menu_button" onclick="showMobileMenu()">
-    <div id="menu_button_div">|||</div>
-  </div>
-  ` + main.innerHTML;
-  mobileMenuSubmenuEventlistener();
-}
-
-function mobileMenuSubmenuEventlistener() {
-  const titles = document.querySelectorAll('.title');
-  titles.forEach(title => {
-    title.addEventListener('click', function() {
-      const submenu = this.nextElementSibling;
-      if (submenu?.classList.contains('submenu')) {
-        submenu.classList.toggle('submenu_visible');
-      }
-    });
-  });
-}
-
-function showMobileMenu() {
-  const header = document.querySelector('header');
-  const menuButtonDiv = document.querySelector('#menu_button_div');
-
-  header.classList.toggle('header_visible');
-  
-
-  const currentRotation = parseInt(menuButtonDiv.getAttribute('data-rotation') || '0');
-  const newRotation = currentRotation + 90;
-  menuButtonDiv.style.transform = `rotate(${newRotation}deg)`;
-  menuButtonDiv.setAttribute('data-rotation', newRotation);
-
-}
-
-
-//functions to manage cookies
+// functions to manage cookies
 
 function setCookie(name, value, days) {
   const date = new Date();
   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = "; expires=" + date.toUTCString();
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
-function deleteCookie(name) {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
-function getCookie(name) {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for (let c of ca) {
-      let cookie = c.trim();
-      if (cookie.startsWith(nameEQ)) return cookie.substring(nameEQ.length, cookie.length);
-  }
-  return null;
+  const expires = '; expires=' + date.toUTCString();
+  document.cookie = name + '=' + (value || '') + expires + '; path=/';
 }
 
 function getAllCookies() {
   return document.cookie.split(';');
+}
+
+function getCookie(name) {
+  const cookiePrefix = `${name}=`;
+  const cookies = document.cookie ? document.cookie.split('; ') : [];
+
+  for (const cookie of cookies) {
+    if (cookie.startsWith(cookiePrefix)) {
+      return cookie.substring(cookiePrefix.length);
+    }
+  }
+
+  return null;
+}
+
+function setLanguage(language) {
+  setCookie('language', language, 365);
+  location.reload();
+}
+
+function acceptCookies() {
+  setCookie('acceptCookies', 'true', 365);
+  const banner = document.querySelector('.cookie-banner');
+  if (banner) {
+    banner.style.transform = 'translateY(100%)';
+    setTimeout(() => {
+      banner.remove();
+      document.body.style.paddingBottom = '';
+    }, 1000);
+  }
 }
 
 
@@ -195,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <button onclick="acceptCookies()">Accept</button>
       `;
       document.body.appendChild(cookieBanner);
+        document.body.style.paddingBottom = `${cookieBanner.offsetHeight}px`;
       
       // Trigger the animation after a small delay to ensure the transition works
       setTimeout(() => {
@@ -211,30 +267,19 @@ document.addEventListener('DOMContentLoaded', function() {
             banner.style.transform = 'translateY(100%)';
             setTimeout(() => {
               banner.remove();
+              document.body.style.paddingBottom = '';
             }, 1000);
           }
       });
   }
 });
 
-//When clicked on one of the flags, set the language cookie and reload the page
-document.addEventListener('click', function(event) {
-  if (event.target.id === 'germany_flag') {
-      setCookie('language', 'de', 365);
-      location.reload();
-  } else if (event.target.id === 'uk_flag') {
-      setCookie('language', 'en', 365);
-      location.reload();
-  }
-});
-
-
 //local storage functions
 
 function setLocalStorageItem(key, value, expireDays) {
   const item = {
     value: value,
-    expiry: expireDays ? new Date().getTime() + expireDays * 24 * 60 * 60 * 1000 : null
+    expiry: expireDays ? Date.now() + expireDays * 24 * 60 * 60 * 1000 : null
   };
   localStorage.setItem(key, JSON.stringify(item));
 }
@@ -245,7 +290,7 @@ function getLocalStorageItem(key) {
     return null;
   }
   const item = JSON.parse(itemStr);
-  if (item.expiry && new Date().getTime() > item.expiry) {
+  if (item.expiry && Date.now() > item.expiry) {
     localStorage.removeItem(key);
     return null;
   }
@@ -322,16 +367,50 @@ function decrypt(encoded, key) {
 
 
 function freeze() {
-  var top= window.scrollY;
+  const top = globalThis.scrollY;
 
   document.body.style.overflow= 'hidden';
 
-  window.onscroll= function() {
-    window.scroll(0, top);
+  globalThis.onscroll= function() {
+    globalThis.scrollTo(0, top);
   }
 }
 
 function unfreeze() {
   document.body.style.overflow= '';
-  window.onscroll= null;
+  globalThis.onscroll= null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartLink();
+});
+
+function updateCartLink() {
+    //change the number of items in the cart link
+    let CountInCart = getCart().length;
+    const cartCount = document.querySelector('.cart_count');
+    if (cartCount && CountInCart > 0) {
+        cartCount.innerHTML = CountInCart;
+        cartCount.style.opacity = '1';
+    } else {
+        cartCount.innerHTML = '';
+        cartCount.style.opacity = '0';
+    }
+}
+
+function getCart() {
+    const cart = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('LAH-')) {
+            try {
+                getLocalStorageItem(key);
+                cart.push(JSON.parse(getLocalStorageItem(key)));
+            } catch (e) {
+                console.error('Error parsing JSON from localStorage:', e);
+                console.error('Key:', key);
+            }
+        }
+    }
+    return cart;
 }

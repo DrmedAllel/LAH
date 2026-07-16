@@ -116,8 +116,8 @@ function createOrderHTML(orderData, language) {
                         <p>${language === 'de' ? 'Wir erstellen Ihre Rechnung und senden diese an Ihre E-Mail-Adresse. Bitte bezahlen Sie erst nach Erhalt der Rechnung.' : 'We create your invoice and send it to your email address. Please pay only after receiving the invoice.'}</p>
                     </div>
                     <div class="step">
-                        <p class="step_title">${language === 'de' ? '3) Download / Bereitstellung' : '3) Download / delivery'}</p>
-                        <p>${language === 'de' ? `Nachdem Ihre Zahlung bei uns eingegangen ist, stellen wir Ihnen Ihre Bestellung gemäß der von Ihnen gewählten Download-Methode zur Verfügung. Sie erhalten eine Benachrichtigung per E-Mail, sobald Ihre Bestellung bereitsteht.` : `Once your payment has been received, we will make your order available according to the download method you chose. You will receive a notification by email once your order is ready.`}</p>
+                        <p class="step_title">${language === 'de' ? '3) Download / DVD-Bereitstellung' : '3) Download / DVD-delivery'}</p>
+                        <p>${language === 'de' ? `Nachdem Ihre  Zahlung bei uns eingegangen ist, stellen wir Ihnen gemäß Ihrer Bestellung per E-Mail einen Link zu den bestellten Dateien in der von Ihnen gewählten Download-Methode zur Verfügung, bzw. übermitteln wir Ihnen die postalischen Versanddaten der DVD-Lieferung.` : `Once your payment has been received, we will make your order available according to the download method you chose. If you chose the DVD option, you will receive a notification by email once your order is ready.`}</p>
                     </div>
                 </div>
             </div>
