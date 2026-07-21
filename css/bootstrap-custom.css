@@ -43,3 +43,8 @@ nav .nav-item {
     transform: translateY(-110%);
     pointer-events: none;
 }
+
+.offcanvas-title {
+    font-size: 1.25rem;
+    color: var(--light-text-color);
+}
