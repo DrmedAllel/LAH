@@ -24,6 +24,10 @@ function addToCart(itemId, itemName, itemPrice, itemType, itemImage, button) {
     } else {
         button.innerHTML = 'In Cart';
     }
+    if (typeof window.showNavbar === 'function') {
+        window.showNavbar();
+    }
+    
     
     //add the class remove-from-cart to the button
     button.classList.add('remove-from-cart');
@@ -60,6 +64,10 @@ function removeFromCart(itemId, button) {
         }
     } else {
         console.error('Button is undefined');
+    }
+
+    if (typeof window.showNavbar === 'function') {
+        window.showNavbar();
     }
 
     console.log(`Item removed from cart: ${itemId}`);
