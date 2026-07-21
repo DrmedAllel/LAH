@@ -203,13 +203,13 @@ function initNavbarAutoHide(scrollUpThreshold = 80) {
   const updateNavbarVisibility = () => {
     const currentScrollY = window.scrollY;
 
-    if (currentScrollY <= 0) {
+    if (currentScrollY <= 200) {
       showNavbar();
       lastScrollY = currentScrollY;
       return;
     }
 
-    if (currentScrollY > lastScrollY) {
+    if (currentScrollY > lastScrollY && currentScrollY >= 200 && !isHidden) {
       accumulatedScrollUp = 0;
       hideNavbar();
     } else if (currentScrollY < lastScrollY && isHidden) {

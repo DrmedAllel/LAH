@@ -29,6 +29,12 @@ nav .nav-item {
     transition: transform 0.35s ease;
     transform: translateY(0);
     will-change: transform, opacity;
+    height: auto !important;
+    min-height: 7rem !important;
+}
+
+#offcanvasNavbar{
+    height: 100vh;
 }
 
 .site-navbar--hidden {
