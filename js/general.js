@@ -74,7 +74,7 @@ ${menuItems}
 }
 
 function buildLanguageDropdown(language) {
-  const isGerman = language !== 'en';
+  const isGerman = language == 'de';
 
   return `
         <li class="nav-item dropdown">
