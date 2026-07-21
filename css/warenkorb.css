@@ -62,8 +62,7 @@ h1 {
         width: 100%;
         height: auto;
         overflow-y: auto;
-        padding-left: 2em;
-        padding-right: 2em;
+        overflow-x: scroll;
     }
 }
 
@@ -266,7 +265,6 @@ s
 .cart{
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: start;
     width: 100%;
     height: 100%;
@@ -275,14 +273,15 @@ s
     overflow-x: hidden;
     scrollbar-width: auto;
     scrollbar-color: var(--text-color) var(--background-color);
+    align-items: center;
 }
 
 .cart-item {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-around;
-    width: 70%;
+    justify-content: center;
+    width: auto;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     margin-bottom: 1em;
@@ -294,15 +293,15 @@ s
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 3em;
+    gap: 3%;
 }
 
 .ItemRow {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 3%;
 }
 
 .ItemColumn {
@@ -344,27 +343,15 @@ s
 }
 
 .add-to-cart{
-    background-color: var(--background-color);
-    border: 1px solid transparent;
-    color: var(--card-color);
+    font-size: 0.75em;
+    border: none;
+    background-color: transparent;
     margin-left: auto;
-    font-size: 1em;
-    font-weight: 700;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 25%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: 0.25s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--text-color);
 }
 
 .add-to-cart:hover{
-    background-color: var(--cancel-color);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    color: var(--text-color);
+    text-decoration: underline;
 }
 
 #subtotal {

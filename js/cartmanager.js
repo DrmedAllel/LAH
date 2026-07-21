@@ -140,7 +140,7 @@ function loadCart() {
                         <p class="ItemID">ID: ${item.id}</p>
                         <p class="ItemPrice">${item.price}</p>
                     </div>
-                    <button class="add-to-cart" onclick="editCartItem('${item.id}', '${item.name}', '${item.price}', '${item.option}', this);"><i class="fa-solid fa-trash"></i></button>
+                    <button class="add-to-cart" onclick="editCartItem('${item.id}', '${item.name}', '${item.price}', '${item.option}', this);">${language === 'de' ? 'Entfernen' : 'Remove'}</button>
                 </div>
             </div>
             `;
