@@ -243,3 +243,15 @@ display: none;
     flex-direction: row;
     align-items: center;
 }
+
+@font-face {
+    font-family: 'Garamond Classico SC';
+    src: url('/Garamond\ Classico\ SC.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#navbar-brand-text {
+    font-family: 'Garamond Classico SC', serif;
+    font-size: 1.5rem;
+}

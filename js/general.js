@@ -100,7 +100,7 @@ function buildNavbar(language) {
         <a class="navbar-brand site-navbar-brand me-lg-4" style="display: flex; align-items: center; gap: 1rem;" href="/index.html" title="${language === 'de' ? 'Startseite' : 'Homepage'}">
           <img src="../images/logo.png" alt="Logo" width="auto" height="70px" class="d-inline-block align-text-top">
           <div style="display: flex; flex-direction: column; line-height: 1.2;">
-            <span>Luftfahrt-Archiv Hafner</span>
+            <span id="navbar-brand-text">Luftfahrt-Archiv Hafner</span>
             <small style="font-size: 0.75rem;">${language === 'de' ? 'gegr. 1990' : 'est. 1990'}</small>
             <small style="font-size: 0.75rem;">Ludwigsburg, ${language === 'de' ? 'Deutschland' : 'Germany'}</small>
           </div>
