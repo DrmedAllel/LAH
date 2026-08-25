@@ -71,6 +71,7 @@ globalThis.addEventListener('DOMContentLoaded', function() {
         <p>${language === 'de' ? 'Flugzeug -, Motoren- und Waffen-Handbücher, Betriebsanleitungen, Ersatzteillisten,</br> Bedienungsvorschriften, Luftschrauben-Anlagen, Montage - und Reparaturanleitungen' : 'Aircraft, engine and weapon manuals, operating instructions, spare parts lists,</br> operating instructions, propeller systems, assembly and repair instructions'}</p>
         <div class="links">
             <a href="mailto:info@luftfahrt-archiv-hafner.de" class="button"><i class="fa-solid fa-envelope"></i> info@luftfahrt-archiv-hafner.de</a>
+            <a href="https://www.linkedin.com/company/luftfahrt-archiv-hafner/" target="_blank" class="button"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
         </div>
     ` + mainSection.innerHTML;
 });
