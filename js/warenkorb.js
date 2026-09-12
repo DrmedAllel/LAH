@@ -111,7 +111,6 @@ function sendMailRequest(to, subject, message) {
     .then(async (response) => {
         const responseText = await response.text();
         let parsed;
-
         try {
             parsed = responseText ? JSON.parse(responseText) : null;
         } catch (parseError) {
@@ -343,7 +342,10 @@ function generateMessage(data) {
     message += `PLZ: ${data.zip}\n`;
     message += `Ort: ${data.city}\n`;
     message += `Land: ${data.country}\n`;
-    message += `Download: ${data.download}\n`;
+    // wenn ein Element mit Download-Methode ausgewählt wurde, füge es hinzu, ansonsten ignoriere es
+    if (data.products.includes('download') && data.download) {
+        message += `Download: ${data.download}\n`;
+    }
     message += `Zahlung: ${data.payment}\n`;
     message += `Zusätzliche Informationen: ${data.additional_info}\n\n\n`;
     message += `Bestellung:\n\n`;
