@@ -95,7 +95,7 @@ function buildLanguageDropdown(language) {
 
 function buildNavbar(language) {
   return `
-    <nav class="navbar navbar-expand-lg navbar-light bg-body-white border border-1 shadow-sm px-3 py-2 site-navbar" data-bs-theme="light" aria-label="Hauptnavigation">
+    <nav class="navbar navbar-expand-xxl navbar-light bg-body-white border border-1 shadow-sm px-3 py-2 site-navbar" data-bs-theme="light" aria-label="Hauptnavigation">
       <div class="container-fluid">
         <a class="navbar-brand site-navbar-brand me-lg-4" style="display: flex; align-items: center; gap: 1rem;" href="/index.html" title="${language === 'de' ? 'Startseite' : 'Homepage'}">
           <img src="../images/logo.png" alt="Logo" width="auto" height="70px" class="d-inline-block align-text-top">
